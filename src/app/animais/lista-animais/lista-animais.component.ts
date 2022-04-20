@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { Observable, switchMap } from 'rxjs';
 import { AnimaisService } from './../animais.service';
 import { UsuarioService } from './../../autenticacao/usuario/usuario.service';
@@ -10,26 +11,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./lista-animais.component.css'],
 })
 export class ListaAnimaisComponent implements OnInit {
-  animais$!: Observable<Animais>;
+  animais$!: Animais;
 
   constructor(
-    private usuarioService: UsuarioService,
-    private animaisService: AnimaisService
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    // this.usuarioService.retornarUsuario().subscribe((usuario) => {
-    //   const userName = usuario.name ?? '';
-    //   this.animaisService.listaDoUsuario(userName).subscribe((animais) => {
-    //     this.animais = animais;
-    //   });
-    // });  // subscribe hell (não é muito utilizado uma cadeia de subscribes)
-
-    this.animais$ = this.usuarioService.retornarUsuario().pipe(
-      switchMap((usuario) => {
-        const userName = usuario.name ?? '';
-        return this.animaisService.listaDoUsuario(userName);
-      })
-    );
+    this.activatedRoute.params.subscribe((params) => {
+      this.animais$ = this.activatedRoute.snapshot.data['animais'];
+    })
   }
 }
